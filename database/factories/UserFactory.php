@@ -3,6 +3,8 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class UserFactory extends Factory
 {
@@ -12,8 +14,9 @@ class UserFactory extends Factory
             'nombre'   => $this->faker->firstName(),
             'apellido' => $this->faker->lastName(),
             'email'    => $this->faker->unique()->safeEmail(),
-            'rol'      => $this->faker->randomElement(['Admin','User']),
-            'password' => 'secret1234',
+            'rol'      => $this->faker->randomElement(['Admin', 'User']),
+            'password' => Hash::make('secret1234'),
+            'remember_token' => Str::random(10),
         ];
     }
 }
