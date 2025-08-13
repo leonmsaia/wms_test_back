@@ -1,61 +1,197 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# WMS Backend API
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Este proyecto implementa una API REST para la gestión del sistema WMS, con autenticación, endpoints CRUD y pruebas automatizadas.
 
-## About Laravel
+## Tecnologías utilizadas
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- Laravel 11
+- PHP 8.3 (dockerizado)
+- Docker y Docker Compose
+- NGINX como proxy reverso
+- Laravel Sanctum para autenticación con tokens
+- Pest (framework de testing oficial de Laravel 11)
+- Tests automatizados de Autenticación y CRUD
+- Colección Postman para pruebas manuales
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Requisitos Previos
 
-## Learning Laravel
+- Docker
+- Docker Compose
+- Git
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+---
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## Setup del entorno
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 1 - Clonar el repositorio
 
-## Laravel Sponsors
+```bash
+git clone <https://github.com/usuario/wms_backend.git>
+cd wms_backend
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 2 - Estructura de carpetas
 
-### Premium Partners
+```
+01-backend/
+│
+├── docker/
+│   ├── php/ (Dockerfile de PHP 8.3)
+│   └── nginx/ (Configuración de NGINX)
+│
+├── docker-compose.yml
+├── .env
+├── composer.json
+└── Laravel Application (app, routes, tests, etc.)
+```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### 3 - Configuración de entorno
 
-## Contributing
+Editar el archivo `.env` con los valores correspondientes:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```
+APP_NAME=WMS_API
+APP_URL=http://localhost:8000
 
-## Code of Conduct
+DB_CONNECTION=mysql
+DB_HOST=db
+DB_PORT=3306
+DB_DATABASE=wms
+DB_USERNAME=wms_user
+DB_PASSWORD=wms_pass
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+SANCTUM_STATEFUL_DOMAINS=localhost:8000
+```
 
-## Security Vulnerabilities
+> Nota: Ver datos de ejemplo en .env.example
+> 
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+---
 
-## License
+## Levantar el entorno Docker
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### 4 - Build inicial
+
+```bash
+docker compose build
+```
+
+### 5 - Levantar los servicios
+
+```bash
+docker compose up -d
+```
+
+---
+
+## Inicialización de Laravel
+
+### 6 - Instalar dependencias
+
+```bash
+docker compose exec backend-php composer install
+```
+
+### 7 - Generar key de aplicación
+
+```bash
+docker compose exec backend-php php artisan key:generate
+```
+
+### 8 - Ejecutar migraciones
+
+```bash
+docker compose exec backend-php php artisan migrate
+```
+
+### 9 - Ejecutar seeders
+
+```bash
+docker compose exec backend-php php artisan db:seed
+```
+
+### 10 - Limpiar cachés
+
+```bash
+docker compose exec backend-php php artisan optimize
+```
+
+---
+
+## URLs disponibles
+
+- API Laravel → http://localhost:8000/
+
+---
+
+## Autenticación
+
+**Endpoint de Login:**
+
+POST `/api/auth/login`
+
+Body de ejemplo:
+
+```json
+{
+  "email": "admin@demo.com",
+  "password": "secret1234"
+}
+```
+
+Respuesta:
+
+```json
+{
+  "access_token": "TOKEN_GENERADO",
+  "token_type": "Bearer"
+}
+```
+
+Todos los endpoints protegidos requieren el header:
+
+```
+Authorization: Bearer <token>
+```
+
+---
+
+## Endpoints principales
+
+- `POST /api/auth/register` → registrar usuario
+- `POST /api/auth/login` → iniciar sesión
+- `GET /api/auth/me` → usuario actual
+- `POST /api/auth/logout` → cerrar sesión
+
+---
+
+## Tests Automatizados (Pest)
+
+Ejecutar tests con:
+
+```bash
+docker compose exec backend-php ./vendor/bin/pest -v
+```
+
+Esto reinicializa la base de datos y ejecuta todos los tests de autenticación y CRUD.
+
+---
+
+## Colección Postman
+
+Se incluye en `/docs/postman/WMS_TEST_ENDPOINTS.postman_collection.json` con:
+
+- Autenticación (Login / Logout / Me / Register)
+- CRUD de recursos
+- Variables predefinidas
+- Autenticación mediante variable `access_token`
+
+Para usarla:
+
+1. Importar la colección en Postman
+2. Configurar la variable `base_url` con `http://localhost:8000`
+3. Ejecutar el request de Login y guardar el token en la variable `access_token`
+
+---
