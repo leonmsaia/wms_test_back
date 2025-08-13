@@ -28,7 +28,7 @@ Este proyecto implementa una API REST para la gestión del sistema WMS, con aute
 ### 1 - Clonar el repositorio
 
 ```bash
-git clone <https://github.com/usuario/wms_backend.git>
+git clone <https://github.com/leonmsaia/wms_test_back.git>
 cd wms_backend
 ```
 
