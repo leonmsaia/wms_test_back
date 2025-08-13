@@ -2,35 +2,23 @@
 
 namespace App\Providers;
 
-use App\Models\User;
-use App\Policies\UserPolicy;
-use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\ServiceProvider;
 
-/**
- * Class AuthServiceProvider
- *
- * Registers model-to-policy mappings for application authorization.
- * 
- * @author  Leon. M. Saia
- * @since   2025-08-12
- * @package App\Providers
- */
-class AuthServiceProvider extends ServiceProvider
+class AppServiceProvider extends ServiceProvider
 {
     /**
-     * The policy mappings for the application.
-     *
-     * @var array<class-string, class-string>
+     * Register any application services.
      */
-    protected $policies = [
-        User::class => UserPolicy::class,
-    ];
+    public function register(): void
+    {
+        //
+    }
 
     /**
-     * Register any authentication / authorization services.
+     * Bootstrap any application services.
      */
     public function boot(): void
     {
-        // Policies are auto-registered from $policies.
+        //
     }
 }
