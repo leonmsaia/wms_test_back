@@ -11,21 +11,15 @@ use Illuminate\Support\Facades\Hash;
 /**
  * Class AuthController
  *
- * Provides API authentication endpoints using Laravel Sanctum, 
+ * Provides API authentication endpoints using Laravel Sanctum,
  * including registration, login, logout, and fetching the authenticated user.
  *
- * @author  Leon. M. Saia <leonmsaia@gmail.com>
+ * @author  Leon. M. Saia
  * @since   2025-08-12
  * @package App\Http\Controllers\Api
  */
 class AuthController extends Controller
 {
-    /**
-     * Registers a new user and stores it in the database.
-     *
-     * @param  Request  $request  The HTTP request containing user data.
-     * @return JsonResponse       JSON response with the created user.
-     */
     public function register(Request $request): JsonResponse
     {
         $data = $request->validate([
@@ -46,12 +40,6 @@ class AuthController extends Controller
         ], 201);
     }
 
-    /**
-     * Authenticates a user and returns a Sanctum API token.
-     *
-     * @param  Request  $request  The HTTP request containing login credentials.
-     * @return JsonResponse       JSON response with the access token.
-     */
     public function login(Request $request): JsonResponse
     {
         $cred = $request->validate([
@@ -75,23 +63,11 @@ class AuthController extends Controller
         ]);
     }
 
-    /**
-     * Returns the currently authenticated user.
-     *
-     * @param  Request  $request  The current HTTP request.
-     * @return JsonResponse       JSON response with user data.
-     */
     public function me(Request $request): JsonResponse
     {
         return response()->json($request->user());
     }
 
-    /**
-     * Logs out the authenticated user by revoking the current token.
-     *
-     * @param  Request  $request  The current HTTP request.
-     * @return JsonResponse       JSON response with a logout confirmation message.
-     */
     public function logout(Request $request): JsonResponse
     {
         $request->user()?->currentAccessToken()?->delete();

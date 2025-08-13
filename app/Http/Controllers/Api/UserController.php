@@ -12,6 +12,7 @@ use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 /**
  * RESTful controller for User CRUD with filters and pagination.
@@ -27,6 +28,7 @@ use Illuminate\Support\Facades\Hash;
  */
 class UserController extends Controller
 {
+    use AuthorizesRequests;
     public function __construct(private UserService $service) {}
 
     /**
@@ -37,11 +39,13 @@ class UserController extends Controller
      */
     public function index(Request $request): UserCollection
     {
+        $this->authorize('viewAny', User::class);
+
         $role = $request->query('role');
         $q    = $request->query('q');
 
-        $pageSize = (int) ($request->query('per_page', 10));
-        $data = $this->service->list($role, $q, $pageSize);
+        $pageSize = (int) $request->query('per_page', 10);
+        $data     = $this->service->list($role, $q, $pageSize);
 
         return new UserCollection($data);
     }
@@ -54,9 +58,11 @@ class UserController extends Controller
      */
     public function store(StoreUserRequest $request): JsonResponse
     {
+        $this->authorize('create', User::class);
+
         $payload = $request->validated();
 
-        if (!empty($payload['password'])) {
+        if (! empty($payload['password'])) {
             $payload['password'] = Hash::make($payload['password']);
         }
 
@@ -77,9 +83,11 @@ class UserController extends Controller
     public function update(UpdateUserRequest $request, int $id): UserResource
     {
         $user = User::findOrFail($id);
+        $this->authorize('update', $user);
+
         $payload = $request->validated();
 
-        if (!empty($payload['password'])) {
+        if (! empty($payload['password'])) {
             $payload['password'] = Hash::make($payload['password']);
         }
 
@@ -97,6 +105,8 @@ class UserController extends Controller
     public function destroy(int $id): JsonResponse
     {
         $user = User::findOrFail($id);
+        $this->authorize('delete', $user);
+
         $user->delete();
 
         return response()->json()->setStatusCode(204);
